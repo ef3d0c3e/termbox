@@ -582,6 +582,7 @@ static int convertnum(uint8_t num, char* buf) {
   return l;
 }
 
+#ifndef WITH_TRUECOLOR
 uint8_t map_to_base_color(tb_color col) {
   if (col > 255)
     return TB_WHITE; // TB_DEFAULT;
@@ -602,6 +603,7 @@ uint8_t map_to_base_color(tb_color col) {
   else
     return TB_BLUE;
 }
+#endif // WITH_TRUECOLOR
 
 #define WRITE_LITERAL(X) bytebuffer_append(&output_buffer, (X), sizeof(X)-1)
 #define WRITE_INT(X) bytebuffer_append(&output_buffer, buf, convertnum((X), buf))
@@ -620,9 +622,6 @@ static void set_colors(tb_color fg, tb_color bg) {
   if (fg & TB_BOLD) {
     bytebuffer_puts(&output_buffer, funcs[T_BOLD]);
   }
-
-  //if (bg & TB_BOLD)
-  //  bytebuffer_puts(&output_buffer, funcs[T_BLINK]);
 
   if (fg & TB_UNDERLINE) {
     bytebuffer_puts(&output_buffer, funcs[T_UNDERLINE]);
@@ -664,18 +663,25 @@ static void set_colors(tb_color fg, tb_color bg) {
   } else {
 
     // write RGB color to buffer
-    WRITE_LITERAL("38;2;");
-    WRITE_INT(fg >> 16 & 0xFF); // fg R
-    WRITE_LITERAL(";");
-    WRITE_INT(fg >> 8 & 0xFF);  // fg G
-    WRITE_LITERAL(";");
-    WRITE_INT(fg & 0xFF);       // fg B
-    WRITE_LITERAL(";48;2;");
-    WRITE_INT(bg >> 16 & 0xFF); // bg R
-    WRITE_LITERAL(";");
-    WRITE_INT(bg >> 8 & 0xFF);  // bg G
-    WRITE_LITERAL(";");
-    WRITE_INT(bg & 0xFF);       // bg B
+
+    if (fg != TB_DEFAULT)
+    {
+        WRITE_LITERAL("38;2;");
+        WRITE_INT(fg >> 16 & 0xFF); // fg R
+        WRITE_LITERAL(";");
+        WRITE_INT(fg >> 8 & 0xFF);  // fg G
+        WRITE_LITERAL(";");
+        WRITE_INT(fg & 0xFF);       // fg B
+    }
+    if (bg != TB_DEFAULT)
+    {
+        WRITE_LITERAL(";48;2;");
+        WRITE_INT(bg >> 16 & 0xFF); // bg R
+        WRITE_LITERAL(";");
+        WRITE_INT(bg >> 8 & 0xFF);  // bg G
+        WRITE_LITERAL(";");
+        WRITE_INT(bg & 0xFF);       // bg B
+    }
 
   }
 
@@ -749,6 +755,16 @@ static void set_colors(tb_color fg, tb_color bg) {
         WRITE_INT(bgcol);
       }
     }
+  }
+
+  if (fg & TB_REVERSE) {
+    WRITE_LITERAL(";7");
+  }
+  if (fg & TB_ITALIC) {
+    WRITE_LITERAL(";3");
+  }
+  if (fg & TB_STRIKE) {
+    WRITE_LITERAL(";9");
   }
 
   WRITE_LITERAL("m");

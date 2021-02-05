@@ -19,14 +19,14 @@ typedef uint32_t tb_color;
 #define LAST_ATTR_INIT  0xFFFFFFFF
 
 // attributes
-#define TB_BOLD         0x01000000
-#define TB_UNDERLINE    0x04000000
-#define TB_REVERSE      0x08000000
-// #define TB_ITALIC    0x03000000
-// #define TB_STRIKE    0x09000000
+#define TB_BOLD         (0b00000001<<24)
+#define TB_UNDERLINE    (0b00000010<<24)
+#define TB_REVERSE      (0b00000100<<24)
+#define TB_ITALIC       (0b00001000<<24)
+#define TB_STRIKE       (0b00010000<<24)
 
 // colors
-#define TB_DEFAULT       16777216 // 0xFFFFFF + 1
+#define TB_DEFAULT      0x80000000 // 0b10000000 << 24
 
 #define TB_RED           0xFF0000
 #define TB_GREEN         0x00FF00
@@ -62,8 +62,8 @@ typedef uint16_t tb_color;
 #define TB_BOLD         0x0100
 #define TB_UNDERLINE    0x0400
 #define TB_REVERSE      0x0800
-// #define TB_ITALIC    0x0300
-// #define TB_STRIKE    0x0900
+#define TB_ITALIC       0x0300
+#define TB_STRIKE       0x0900
 
 // colors
 #define TB_DEFAULT       0x00

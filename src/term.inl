@@ -145,7 +145,7 @@ static int init_term_builtin(void) {
 static bool detect_color_support() {
 #ifdef WITH_TRUECOLOR
   const char *colorterm = getenv("COLORTERM");
-  if (colorterm && ((strcmp(colorterm) == "truecolor") == 0) || (strcmp(colorterm, "24bit") == 0)) {
+  if (colorterm && ((strcmp(colorterm, "truecolor") == 0) || (strcmp(colorterm, "24bit") == 0))) {
     return 2; // true color support
   }
 #endif
